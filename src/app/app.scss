@@ -1,6 +1,4 @@
 // http://ionicframework.com/docs/theming/
-
-
 // App Global Sass
 // --------------------------------------------------
 // Put style rules here that you want to apply globally. These
@@ -14,3 +12,143 @@
 // To declare rules for a specific mode, create a child rule
 // for the .md, .ios, or .wp mode classes. The mode class is
 // automatically applied to the <body> element in the app.
+.logo {
+  padding-top: 5%;
+  max-width: 95px;
+  margin: auto;
+}
+
+.side-menu-logo-container {
+  padding-top: 10%;
+  padding-bottom: 5%;
+}
+
+.logo-inside-app {
+  max-width: 15%;
+  margin: auto;
+}
+
+.topSLogan {
+  margin-top: 0%;
+  text-align: center;
+  margin-bottom: 0%;
+}
+
+.login {
+  background-color: #1d5288;
+}
+
+.topSLogan p {
+  color: #82b1ff;
+  text-align: center;
+  font-style: italic;
+}
+
+.bottomSLogan {
+  text-align: center;
+  margin-bottom: 2%;
+  margin-top: 0px;
+}
+
+.bottomSLogan p {
+  margin: 0px;
+}
+
+.bottom-sLogan-title {
+  font-style: italic;
+  color: #ffffff;
+  text-transform: lowercase;
+  font-size: 0.8rem;
+} //button for ios
+.button-ios,
+.button-md {
+  margin: 0em;
+  padding: 0em
+}
+
+ion-modal.inset-modal {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  transition: opacity 0.25s ease-in-out;
+  padding: 20vh 7vw;
+}
+
+.required {
+  color: #f53d3d;
+}
+
+.side-menu-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.item-card {
+  border: 1px solid #e6e6e7;
+  background-color: #FFFFFF;
+  border-radius: 0.2rem;
+  padding: 5px 10px 5px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.input-field-container {
+  border: 1px solid #e6e6e7;
+  background-color: #FFFFFF;
+  border-radius: 0.2rem;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  margin-right: 3px;
+}
+
+.input-field-container-success {
+  border: 1px solid #73ad72;
+  background-color: #FFFFFF;
+  border-radius: 0.2rem;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  margin-right: 3px;
+}
+
+.input-field-container-saving {
+  border: 1px solid #fffe8c;
+  background-color: #FFFFFF;
+  border-radius: 0.2rem;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  margin-right: 3px;
+}
+
+.input-field-container-failed {
+  border: 1px solid #ff8a8a;
+  background-color: #FFFFFF;
+  border-radius: 0.2rem;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  margin-right: 3px;
+}
+
+.input-field-container-warning {
+  border: 1px solid #ff6600;
+  background-color: #FFFFFF;
+  border-radius: 0.2rem;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  margin-right: 3px;
+}
+
+.input-field-container-disabled {
+  border: 1px solid #e6e6e7;
+  background-color: #ccc;
+  border-radius: 0.2rem;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  margin-right: 3px;
+}
+
+.list-ios>.item-block:first-child {
+  border-top: 0px solid #c8c7cc;
+}
+
+.list-ios>.item-block:last-child,
+.list-ios>.item-wrapper:last-child .item-block {
+  border-bottom: 0px solid #c8c7cc;
+}
