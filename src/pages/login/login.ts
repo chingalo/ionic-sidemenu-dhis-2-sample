@@ -26,8 +26,7 @@ import {
   IonicPage,
   NavController,
   ModalOptions,
-  ModalController,
-  MenuController
+  ModalController
 } from 'ionic-angular';
 import { UserProvider } from '../../providers/user/user';
 import { CurrentUser } from '../../models/currentUser';
@@ -36,6 +35,11 @@ import * as _ from 'lodash';
 import { AppTranslationProvider } from '../../providers/app-translation/app-translation';
 import { AppProvider } from '../../providers/app/app';
 import { SystemSettingProvider } from '../../providers/system-setting/system-setting';
+import { SettingsProvider } from '../../providers/settings/settings';
+import { SmsCommandProvider } from '../../providers/sms-command/sms-command';
+import { LocalInstanceProvider } from '../../providers/local-instance/local-instance';
+import { EncryptionProvider } from '../../providers/encryption/encryption';
+import { BackgroundMode } from '@ionic-native/background-mode';
 
 /**
  * Generated class for the LoginPage page.
@@ -73,8 +77,12 @@ export class LoginPage implements OnInit, OnDestroy {
     private appTranslationProvider: AppTranslationProvider,
     private appProvider: AppProvider,
     private systemSettings: SystemSettingProvider,
+    private settingsProvider: SettingsProvider,
+    private smsCommandProvider: SmsCommandProvider,
+    private localInstanceProvider: LocalInstanceProvider,
+    private encryptionProvider: EncryptionProvider,
     private modalCtrl: ModalController,
-    private menu: MenuController
+    private backgroundMode: BackgroundMode
   ) {
     this.logoUrl = 'assets/img/logo.png';
     this.offlineIcon = 'assets/icon/offline.png';
@@ -98,7 +106,6 @@ export class LoginPage implements OnInit, OnDestroy {
       // 'reports',
       // 'constants'
     ];
-    this.menu.enable(false);
   }
 
   ngOnInit() {
@@ -109,9 +116,13 @@ export class LoginPage implements OnInit, OnDestroy {
       currentLanguage: 'en',
       progressTracker: {}
     };
+    this.localInstanceProvider.getLocalInstances().subscribe(localInstances => {
+      this.localInstances = localInstances;
+    });
     this.userProvider.getCurrentUser().subscribe(
       (currentUser: CurrentUser) => {
         if (currentUser && currentUser.username) {
+          currentUser.password = '';
           this.currentUser = currentUser;
         } else {
           this.currentUser = defaultCurrentUser;
@@ -128,15 +139,19 @@ export class LoginPage implements OnInit, OnDestroy {
       cssClass: 'inset-modal',
       enableBackdropDismiss: true
     };
-    const data = {};
+    const data = { localInstances: this.localInstances };
     const modal = this.modalCtrl.create(
       'LocalInstancesSelectionPage',
       { data: data },
       options
     );
-    modal.onDidDismiss((code: string) => {
-      if (code) {
-        console.log('code : ', code);
+    modal.onDidDismiss((currentUser: CurrentUser) => {
+      if (currentUser) {
+        this.currentUser = null;
+        currentUser.password = '';
+        setTimeout(() => {
+          this.currentUser = _.assign({}, this.currentUser, currentUser);
+        }, 20);
       }
     });
     modal.present();
@@ -190,10 +205,66 @@ export class LoginPage implements OnInit, OnDestroy {
     this.onCancelLoginProcess();
   }
 
-  onSuccessLogin(currentUser) {
-    console.log('currentUser : ' + JSON.stringify(currentUser));
-    this.menu.enable(true);
-    this.navCtrl.setRoot('HomePage');
+  onSuccessLogin(data) {
+    const { currentUser } = data;
+    currentUser.isLogin = true;
+    let loggedInInInstance = this.currentUser.serverUrl;
+    if (currentUser.serverUrl.split('://').length > 1) {
+      loggedInInInstance = this.currentUser.serverUrl.split('://')[1];
+    }
+    this.reCheckingAppSetting(currentUser);
+    this.smsCommandProvider
+      .checkAndGenerateSmsCommands(currentUser)
+      .subscribe(() => {}, error => {});
+    currentUser.hashedKeyForOfflineAuthentication = this.encryptionProvider.getHashedKeyForOfflineAuthentication(
+      currentUser
+    );
+    currentUser.password = this.encryptionProvider.encode(currentUser.password);
+    currentUser.isPasswordEncode = true;
+    if (
+      this.currentUser &&
+      this.currentUser.serverUrl &&
+      this.currentUser.username
+    ) {
+      this.currentUser['currentDatabase'] = this.appProvider.getDataBaseName(
+        this.currentUser.serverUrl,
+        this.currentUser.username
+      );
+      this.localInstanceProvider
+        .setLocalInstanceInstances(
+          this.localInstances,
+          currentUser,
+          loggedInInInstance
+        )
+        .subscribe(() => {
+          this.userProvider.setCurrentUser(currentUser).subscribe(() => {
+            this.backgroundMode
+              .disable()
+              .then(() => {})
+              .catch(e => {});
+            this.navCtrl.setRoot('HomePage');
+          });
+        });
+    }
+  }
+
+  reCheckingAppSetting(currentUser) {
+    let defaultSetting = this.settingsProvider.getDefaultSettings();
+    this.settingsProvider
+      .getSettingsForTheApp(currentUser)
+      .subscribe((appSettings: any) => {
+        if (!appSettings) {
+          let time = defaultSetting.synchronization.time;
+          let timeType = defaultSetting.synchronization.timeType;
+          defaultSetting.synchronization.time = this.settingsProvider.getDisplaySynchronizationTime(
+            time,
+            timeType
+          );
+          this.settingsProvider
+            .setSettingsForTheApp(currentUser, defaultSetting)
+            .subscribe(() => {}, error => {});
+        }
+      });
   }
 
   onSystemSettingLoaded(data: any, skipSaving?: boolean) {

@@ -22,7 +22,7 @@
  *
  */
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { IonicPage, ViewController } from 'ionic-angular';
+import { IonicPage, ViewController, NavParams } from 'ionic-angular';
 import { Subscription } from 'rxjs/Subscription';
 
 /**
@@ -42,13 +42,16 @@ export class LocalInstancesSelectionPage implements OnInit, OnDestroy {
   localInstances: Array<any>;
   subscriptions: Subscription;
 
-  constructor(private viewCtrl: ViewController) {
+  constructor(private viewCtrl: ViewController, private navParams: NavParams) {
     this.localInstances = [];
     this.subscriptions = new Subscription();
   }
 
   ngOnInit() {
     this.cancelIcon = 'assets/icon/cancel.png';
+    const data = this.navParams.get('data');
+    const { localInstances } = data;
+    this.localInstances = localInstances ? localInstances : [];
   }
 
   ngOnDestroy() {

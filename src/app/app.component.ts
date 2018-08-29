@@ -26,6 +26,7 @@ import { Nav, Platform } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { UserProvider } from '../providers/user/user';
+import { CurrentUser } from '../models/currentUser';
 
 @Component({
   templateUrl: 'app.html'
@@ -63,16 +64,15 @@ export class MyApp {
   }
 
   logOut() {
-    try {
-      this.nav.setRoot('LoginPage');
-      // this.userProvider.getCurrentUser().subscribe(user => {
-      //   user.isLogin = false;
-      //   this.userProvider.setCurrentUser(user).subscribe(() => {
-      //     this.nav.setRoot('LoginPage');
-      //   });
-      // });
-    } catch (e) {
-      console.log(JSON.stringify(e));
-    }
+    this.userProvider.getCurrentUser().subscribe((currentUser: CurrentUser) => {
+      if (currentUser && currentUser.username) {
+        currentUser.isLogin = false;
+        this.userProvider.setCurrentUser(currentUser).subscribe(() => {
+          this.nav.setRoot('LoginPage');
+        });
+      } else {
+        this.nav.setRoot('LoginPage');
+      }
+    });
   }
 }
