@@ -1,33 +1,57 @@
+/*
+ *
+ * Copyright 2015 HISP Tanzania
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301, USA.
+ *
+ * @since 2015
+ * @author Joseph Chingalo <profschingalo@gmail.com>
+ *
+ */
+import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
 import { CurrentUser } from '../../models/currentUser';
-import * as fromCurrentUserActions from '../actions/currentUser.actons';
+import { CurrentUserActions, CurrentUserActionTypes } from '../actions';
+export interface currentUserState extends EntityState<CurrentUser> {}
 
-export interface CurrentUserState {
-  data: CurrentUser;
-}
+export const currentUserAdapter: EntityAdapter<
+  CurrentUser
+> = createEntityAdapter<CurrentUser>();
 
-export const initialState: CurrentUserState = {
-  data: {
-    name: '',
-    username: 'admin',
-    password: '',
-    serverUrl: '',
-    currentLanguage: 'en'
-  }
-};
+const initialState: currentUserState = currentUserAdapter.getInitialState({});
 
 export function currentUserReducer(
-  state: CurrentUserState = initialState,
-  action: fromCurrentUserActions.CurrentUserActions
-) {
+  state = initialState,
+  action: CurrentUserActions
+): currentUserState {
+  console.log('On adding ' + JSON.stringify(action));
   switch (action.type) {
-    case fromCurrentUserActions.UPDATE_CURRENT_USER: {
-      return {
-        data: action.payload
-      };
+    case CurrentUserActionTypes.AddCurrentUser: {
+      return currentUserAdapter.addOne(action.payload.currentUser, state);
+    }
+    case CurrentUserActionTypes.UpdateCurrentUser: {
+      return currentUserAdapter.updateOne(
+        { id: action.payload.id, changes: action.payload.currentUser },
+        state
+      );
+    }
+    case CurrentUserActionTypes.ClearCurrentUser: {
+      return currentUserAdapter.removeAll(state);
+    }
+    default: {
+      return state;
     }
   }
-
-  return state;
 }
-
-export const getCurrentUserData = (state: CurrentUserState) => state.data;

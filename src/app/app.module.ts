@@ -29,7 +29,7 @@ import { IonicStorageModule } from '@ionic/storage';
 import { MyApp } from './app.component';
 
 //store
-import { reducers, effects } from '../store';
+import { reducers, effects, metaReducers } from '../store';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 
@@ -46,7 +46,7 @@ import { appProviders, nativePlugins } from '../providers';
   imports: [
     BrowserModule,
     IonicStorageModule.forRoot(),
-    StoreModule.forRoot(reducers),
+    StoreModule.forRoot(reducers, { metaReducers }),
     EffectsModule.forRoot(effects),
     IonicModule.forRoot(MyApp, { scrollAssist: false, autoFocusAssist: false }),
     HttpClientModule,

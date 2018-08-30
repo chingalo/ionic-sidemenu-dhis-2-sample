@@ -1,11 +1,50 @@
+/*
+ *
+ * Copyright 2015 HISP Tanzania
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301, USA.
+ *
+ * @since 2015
+ * @author Joseph Chingalo <profschingalo@gmail.com>
+ *
+ */
 import { Action } from '@ngrx/store';
 import { CurrentUser } from '../../models/currentUser';
 
-export const UPDATE_CURRENT_USER = '[Current user] updating current user';
-
-export class UpdateCurrentUser implements Action {
-  readonly type = UPDATE_CURRENT_USER;
-  constructor(public payload: CurrentUser) {}
+export enum CurrentUserActionTypes {
+  AddCurrentUser = '[Current user] Adding current user',
+  ClearCurrentUser = '[Current user] Clear current users',
+  UpdateCurrentUser = '[Current user] updating current user'
 }
 
-export type CurrentUserActions = UpdateCurrentUser;
+export class ClearCurrentUser implements Action {
+  readonly type = CurrentUserActionTypes.ClearCurrentUser;
+}
+
+export class AddCurrentUser implements Action {
+  readonly type = CurrentUserActionTypes.AddCurrentUser;
+  constructor(public payload: { currentUser: CurrentUser }) {}
+}
+
+export class UpdateCurrentUser implements Action {
+  readonly type = CurrentUserActionTypes.UpdateCurrentUser;
+  constructor(public payload: { id: string; currentUser: CurrentUser }) {}
+}
+
+export type CurrentUserActions =
+  | AddCurrentUser
+  | ClearCurrentUser
+  | UpdateCurrentUser;

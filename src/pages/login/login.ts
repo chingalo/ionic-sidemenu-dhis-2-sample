@@ -31,6 +31,9 @@ import {
 import { UserProvider } from '../../providers/user/user';
 import { CurrentUser } from '../../models/currentUser';
 
+import { Store } from '@ngrx/store';
+import { State, AddCurrentUser } from '../../store';
+
 import * as _ from 'lodash';
 import { AppTranslationProvider } from '../../providers/app-translation/app-translation';
 import { AppProvider } from '../../providers/app/app';
@@ -82,7 +85,8 @@ export class LoginPage implements OnInit, OnDestroy {
     private localInstanceProvider: LocalInstanceProvider,
     private encryptionProvider: EncryptionProvider,
     private modalCtrl: ModalController,
-    private backgroundMode: BackgroundMode
+    private backgroundMode: BackgroundMode,
+    private store: Store<State>
   ) {
     this.logoUrl = 'assets/img/logo.png';
     this.offlineIcon = 'assets/icon/offline.png';
@@ -237,6 +241,7 @@ export class LoginPage implements OnInit, OnDestroy {
           loggedInInInstance
         )
         .subscribe(() => {
+          this.store.dispatch(new AddCurrentUser({ currentUser: currentUser }));
           this.userProvider.setCurrentUser(currentUser).subscribe(() => {
             this.backgroundMode
               .disable()
