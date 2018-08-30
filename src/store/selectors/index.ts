@@ -21,4 +21,4 @@
  * @author Joseph Chingalo <profschingalo@gmail.com>
  *
  */
-export * from './currentUser.selectors';
+export * from './current-user.selectors';

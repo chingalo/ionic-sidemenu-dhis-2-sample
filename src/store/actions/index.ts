@@ -21,4 +21,4 @@
  * @author Joseph Chingalo <profschingalo@gmail.com>
  *
  */
-export * from './currentUser.actons';
+export * from './current-user.actons';

@@ -43,6 +43,6 @@ import { Observable } from 'rxjs';
 export class HomePage {
   currentUser$: Observable<any>;
   constructor(public navCtrl: NavController, private store: Store<State>) {
-    this.currentUser$ = store.select(getCurrentUser);
+    this.currentUser$ = this.store.select(getCurrentUser);
   }
 }

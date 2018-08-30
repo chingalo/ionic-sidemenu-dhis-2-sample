@@ -21,4 +21,6 @@
  * @author Joseph Chingalo <profschingalo@gmail.com>
  *
  */
-export const effects: any[] = [];
+import { currentUserEffects } from './current-user.effects';
+
+export const effects: any[] = [currentUserEffects];

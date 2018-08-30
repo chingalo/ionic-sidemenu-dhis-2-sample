@@ -28,6 +28,9 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { UserProvider } from '../providers/user/user';
 import { CurrentUser } from '../models/currentUser';
 
+import { Store } from '@ngrx/store';
+import { State, ClearCurrentUser } from '../store';
+
 @Component({
   templateUrl: 'app.html'
 })
@@ -43,7 +46,8 @@ export class MyApp {
     private platform: Platform,
     private statusBar: StatusBar,
     private splashScreen: SplashScreen,
-    private userProvider: UserProvider
+    private userProvider: UserProvider,
+    private store: Store<State>
   ) {
     this.logoUrl = 'assets/img/logo.png';
     this.logOutIcon = 'assets/img/logo.png';
@@ -64,14 +68,12 @@ export class MyApp {
   }
 
   logOut() {
+    this.nav.setRoot('LoginPage');
+    this.store.dispatch(new ClearCurrentUser());
     this.userProvider.getCurrentUser().subscribe((currentUser: CurrentUser) => {
       if (currentUser && currentUser.username) {
         currentUser.isLogin = false;
-        this.userProvider.setCurrentUser(currentUser).subscribe(() => {
-          this.nav.setRoot('LoginPage');
-        });
-      } else {
-        this.nav.setRoot('LoginPage');
+        this.userProvider.setCurrentUser(currentUser).subscribe(() => {});
       }
     });
   }

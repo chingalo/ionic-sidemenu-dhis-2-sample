@@ -23,11 +23,16 @@
  */
 import { createSelector } from '@ngrx/store';
 import { getRootState, State } from '../reducers';
-import { currentUserAdapter } from '../reducers/currentUser.reducers';
+import { currentUserAdapter } from '../reducers/current-user.reducers';
 
 export const getUsersEntityState = createSelector(
   getRootState,
   (state: State) => state.currentUser
+);
+
+const getCurrentUserId = createSelector(
+  getUsersEntityState,
+  state => state.currentUserId
 );
 
 export const {
@@ -37,11 +42,11 @@ export const {
 } = currentUserAdapter.getSelectors(getUsersEntityState);
 
 export const getCurrentUser = createSelector(
-  getCurrentUserIds,
+  getCurrentUserId,
   getCurrentUserEntities,
-  (ids, entities) => {
-    console.log(JSON.stringify(ids));
-    console.log(JSON.stringify(entities));
-    return { ids };
+  (currentUserId, entities) => {
+    return currentUserId && entities && entities[currentUserId]
+      ? entities[currentUserId]
+      : null;
   }
 );

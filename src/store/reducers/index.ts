@@ -22,7 +22,7 @@
  *
  */
 import { ActionReducerMap, MetaReducer } from '@ngrx/store';
-import { currentUserState, currentUserReducer } from './currentUser.reducers';
+import { currentUserState, currentUserReducer } from './current-user.reducers';
 
 export interface State {
   currentUser: currentUserState;

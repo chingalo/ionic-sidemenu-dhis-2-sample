@@ -24,19 +24,22 @@
 import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
 import { CurrentUser } from '../../models/currentUser';
 import { CurrentUserActions, CurrentUserActionTypes } from '../actions';
-export interface currentUserState extends EntityState<CurrentUser> {}
+export interface currentUserState extends EntityState<CurrentUser> {
+  currentUserId: string;
+}
 
 export const currentUserAdapter: EntityAdapter<
   CurrentUser
 > = createEntityAdapter<CurrentUser>();
 
-const initialState: currentUserState = currentUserAdapter.getInitialState({});
+const initialState: currentUserState = currentUserAdapter.getInitialState({
+  currentUserId: null
+});
 
 export function currentUserReducer(
   state = initialState,
   action: CurrentUserActions
 ): currentUserState {
-  console.log('On adding ' + JSON.stringify(action));
   switch (action.type) {
     case CurrentUserActionTypes.AddCurrentUser: {
       return currentUserAdapter.addOne(action.payload.currentUser, state);
@@ -47,8 +50,11 @@ export function currentUserReducer(
         state
       );
     }
+    case CurrentUserActionTypes.SetCurrentUser: {
+      return { ...state, currentUserId: action.payload.id };
+    }
     case CurrentUserActionTypes.ClearCurrentUser: {
-      return currentUserAdapter.removeAll(state);
+      return currentUserAdapter.removeAll({ ...state, currentUserId: null });
     }
     default: {
       return state;

@@ -27,11 +27,17 @@ import { CurrentUser } from '../../models/currentUser';
 export enum CurrentUserActionTypes {
   AddCurrentUser = '[Current user] Adding current user',
   ClearCurrentUser = '[Current user] Clear current users',
+  SetCurrentUser = '[Current user] Set current user',
   UpdateCurrentUser = '[Current user] updating current user'
 }
 
 export class ClearCurrentUser implements Action {
   readonly type = CurrentUserActionTypes.ClearCurrentUser;
+}
+
+export class SetCurrentUser implements Action {
+  readonly type = CurrentUserActionTypes.SetCurrentUser;
+  constructor(public payload: { id: string }) {}
 }
 
 export class AddCurrentUser implements Action {
@@ -47,4 +53,5 @@ export class UpdateCurrentUser implements Action {
 export type CurrentUserActions =
   | AddCurrentUser
   | ClearCurrentUser
-  | UpdateCurrentUser;
+  | UpdateCurrentUser
+  | SetCurrentUser;
