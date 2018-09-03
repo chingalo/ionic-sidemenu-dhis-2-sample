@@ -114,9 +114,9 @@ export class LoginPage implements OnInit, OnDestroy {
 
   ngOnInit() {
     const defaultCurrentUser: CurrentUser = {
-      serverUrl: 'dhis.hisptz.org/eds', // 'ssudanhis.org', //'play.dhis2.org/2.28',
-      username: 'chingalo', // 'boma',
-      password: 'Chingalo111987', // 'Boma_2018',
+      serverUrl: 'play.dhis2.org/2.28', // 'ssudanhis.org', //'play.dhis2.org/2.28',
+      username: 'admin', // 'boma',
+      password: 'district', // 'Boma_2018',
       currentLanguage: 'en',
       progressTracker: {}
     };
@@ -217,14 +217,12 @@ export class LoginPage implements OnInit, OnDestroy {
       loggedInInInstance = this.currentUser.serverUrl.split('://')[1];
     }
     this.reCheckingAppSetting(currentUser);
-    this.smsCommandProvider
-      .checkAndGenerateSmsCommands(currentUser)
-      .subscribe(() => {}, error => {});
     currentUser.hashedKeyForOfflineAuthentication = this.encryptionProvider.getHashedKeyForOfflineAuthentication(
       currentUser
     );
     currentUser.password = this.encryptionProvider.encode(currentUser.password);
     currentUser.isPasswordEncode = true;
+    this.currentUser = _.assign({}, this.currentUser, currentUser);
     if (
       this.currentUser &&
       this.currentUser.serverUrl &&
@@ -237,16 +235,21 @@ export class LoginPage implements OnInit, OnDestroy {
       this.localInstanceProvider
         .setLocalInstanceInstances(
           this.localInstances,
-          currentUser,
+          this.currentUser,
           loggedInInInstance
         )
         .subscribe(() => {
-          this.store.dispatch(new AddCurrentUser({ currentUser: currentUser }));
-          this.userProvider.setCurrentUser(currentUser).subscribe(() => {
+          this.store.dispatch(
+            new AddCurrentUser({ currentUser: this.currentUser })
+          );
+          this.userProvider.setCurrentUser(this.currentUser).subscribe(() => {
             this.backgroundMode
               .disable()
               .then(() => {})
               .catch(e => {});
+            this.smsCommandProvider
+              .checkAndGenerateSmsCommands(this.currentUser)
+              .subscribe(() => {}, error => {});
             this.navCtrl.setRoot('HomePage');
           });
         });
