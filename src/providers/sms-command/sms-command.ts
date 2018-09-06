@@ -26,7 +26,7 @@ import { SqlLiteProvider } from '../sql-lite/sql-lite';
 import { HttpClientProvider } from '../http-client/http-client';
 import { DataSetsProvider } from '../data-sets/data-sets';
 import { DataSet } from '../../models/dataSet';
-import { SmsCommand } from '../../models/smsCommand';
+import { SmsCommand } from '../../models/sms-command';
 import { SMS } from '@ionic-native/sms';
 import { Observable } from 'rxjs/Observable';
 import * as _ from 'lodash';
