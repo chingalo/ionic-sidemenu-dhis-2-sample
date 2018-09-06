@@ -26,7 +26,8 @@ import {
   IonicPage,
   NavController,
   ModalOptions,
-  ModalController
+  ModalController,
+  MenuController
 } from 'ionic-angular';
 import { UserProvider } from '../../providers/user/user';
 import { CurrentUser } from '../../models/currentUser';
@@ -86,8 +87,10 @@ export class LoginPage implements OnInit, OnDestroy {
     private encryptionProvider: EncryptionProvider,
     private modalCtrl: ModalController,
     private backgroundMode: BackgroundMode,
-    private store: Store<State>
+    private store: Store<State>,
+    private menuCtrl: MenuController
   ) {
+    this.menuCtrl.enable(false);
     this.logoUrl = 'assets/img/logo.png';
     this.offlineIcon = 'assets/icon/offline.png';
     this.isLoginFormValid = false;

@@ -21,8 +21,13 @@
  * @author Joseph Chingalo <profschingalo@gmail.com>
  *
  */
-import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { Component, OnInit } from '@angular/core';
+import {
+  IonicPage,
+  NavController,
+  NavParams,
+  MenuController
+} from 'ionic-angular';
 
 import { Store } from '@ngrx/store';
 import { State, getCurrentUser } from '../../store';
@@ -40,9 +45,17 @@ import { Observable } from 'rxjs';
   selector: 'page-home',
   templateUrl: 'home.html'
 })
-export class HomePage {
+export class HomePage implements OnInit {
   currentUser$: Observable<any>;
-  constructor(public navCtrl: NavController, private store: Store<State>) {
+  constructor(
+    public navCtrl: NavController,
+    private store: Store<State>,
+    private menuCtrl: MenuController
+  ) {
     this.currentUser$ = this.store.select(getCurrentUser);
+  }
+
+  ngOnInit() {
+    this.menuCtrl.enable(true);
   }
 }
